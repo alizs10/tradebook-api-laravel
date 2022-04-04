@@ -24,7 +24,7 @@ class User extends Authenticatable
         'verification_code',
         'email_verified_at',
         'profile_photo_path',
-        'password',
+        'password'
     ];
 
     /**
@@ -45,6 +45,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    protected $appends = ['referral_code'];
 
     public function accounts()
     {
@@ -54,5 +55,20 @@ class User extends Authenticatable
     public function notes()
     {
         return $this->hasMany(Note::class, 'user_id');
+    }
+
+    public function referral()
+    {
+        return $this->hasOne(ReferralCode::class, 'user_id');
+    }
+
+    public function plansValues()
+    {
+        return $this->hasOne(PlanUserValue::class, 'user_id');
+    }
+
+    public function getReferralCodeAttribute()
+    {
+        return $this->attributes['referral_code'] = $this->referral->referral_code;
     }
 }

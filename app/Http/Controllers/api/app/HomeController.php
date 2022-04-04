@@ -15,6 +15,7 @@ class HomeController extends Controller
         $accountsCount = count($user->accounts);
         $notesCount = count($user->notes);
         $tradesCount = 0;
+        $validFor = $user->plansValues->valid_for;
 
         if ($accountsCount > 0) {
             foreach ($user->accounts as $account) {
@@ -25,7 +26,8 @@ class HomeController extends Controller
         return response([
             'accountsCount' => $accountsCount,
             'notesCount' => $notesCount,
-            'tradesCount' => $tradesCount
+            'tradesCount' => $tradesCount,
+            'validFor' => $validFor
         ], 200);
     }
 }

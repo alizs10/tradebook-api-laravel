@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\api\auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\PlanUserValue;
+use App\Models\ReferralCode;
 use App\Models\User;
+use App\Services\ReferralCodeServices;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password as FacadesPassword;
 use Illuminate\Validation\Rules\Password;
@@ -39,26 +43,48 @@ class AuthController extends Controller
         ], 401);
     }
 
-    public function register(Request $request)
+    public function register(Request $request,ReferralCodeServices $referralCodeServices)
     {
         $request->validate([
             'name' => 'required|string|min:5|max:90',
             'email' => 'required|email|unique:users,email',
             'mobile' => 'required|digits:11,unique:users,mobile',
-            'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers(), 'max:16', 'confirmed']
+            'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers(), 'max:16', 'confirmed'],
+            'referral_code' => 'nullable|size:8|string'
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'mobile' => $request->mobile,
-            'password' => Hash::make($request->password)
-        ]);
 
-        if ($user) {
+        $result = DB::transaction(function () use ($request, $referralCodeServices) {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'mobile' => $request->mobile,
+                'password' => Hash::make($request->password)
+            ]);
+
+            PlanUserValue::create([
+                'user_id' => $user->id,
+                'valid_for' => 0,
+                'valid_until' => now()
+            ]);
+
+            $referralCode = Str::random(8);
+            ReferralCode::create([
+                'user_id' => $user->id,
+                'referral_code' => $referralCode
+            ]);
+
+            $response = $referralCodeServices->apply($request->referral_code, $referralCode);
+
+            return ['user' => $user, 'referral_code_response' => $response];
+        });
+
+
+        if ($result['user']) {
             return response([
                 'message' => 'user created successfully',
-                'user' => $user
+                'user' => $result['user'],
+                'referral_code_response' => $result['referral_code_response']
             ], 201);
         }
 

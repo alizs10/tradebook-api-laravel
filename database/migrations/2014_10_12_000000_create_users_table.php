@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('mobile')->unique();
+            $table->tinyInteger('status')->default(0)->comment('0 => does not have plan, 1 => have plan');
+            $table->text('is_admin')->default(0);
             $table->text('profile_photo_path')->nullable();
             $table->string('verification_code')->nullable();
             $table->timestamp('email_verified_at')->nullable();

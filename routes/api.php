@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\api\Admin\PlansController;
+use App\Http\Controllers\api\Admin\UsersController;
 use App\Http\Controllers\api\app\AccountsController;
 use App\Http\Controllers\api\app\HomeController;
 use App\Http\Controllers\api\app\NotesController;
@@ -7,6 +9,8 @@ use App\Http\Controllers\api\app\PairsController;
 use App\Http\Controllers\api\app\TradesController;
 use App\Http\Controllers\api\app\UserController;
 use App\Http\Controllers\api\auth\AuthController;
+use App\Http\Middleware\idAdmin;
+use App\Http\Middleware\isActive;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -30,10 +34,32 @@ Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
 
+// admin routes
+
+Route::prefix('admin')->middleware(['auth:sanctum', idAdmin::class])->group(function () {
+
+    //plans
+    Route::prefix('plans')->group(function () {
+        Route::get('/', [PlansController::class, 'index']);
+        Route::post('/store', [PlansController::class, 'store']);
+        Route::put('{plan}/update', [PlansController::class, 'update']);
+        Route::get('{plan}/destroy', [PlansController::class, 'destroy']);
+    });
+
+
+    //users
+    Route::prefix('users')->group(function () {
+        Route::get('/', [UsersController::class, 'index']);
+        Route::put('{user}/update', [UsersController::class, 'update']);
+        Route::get('{user}/destroy', [UsersController::class, 'destroy']);
+    });
+
+});
+
 
 // app private routes
 
-Route::prefix('panel')->middleware('auth:sanctum')->group(function () {
+Route::prefix('panel')->middleware(['auth:sanctum', isActive::class])->group(function () {
 
     //home
     Route::prefix('home')->group(function () {
