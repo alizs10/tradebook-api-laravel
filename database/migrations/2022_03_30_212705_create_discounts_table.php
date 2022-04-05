@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignId('plan_id')->nullable()->constrained('plans')->onUpdate('cascade')->onDelete('cascade')->comment("null means its for all plans");
             $table->foreignId('user_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade')->comment("null means its for all users");
             $table->integer('value')->comment("percentage");
+            $table->string('code');
+            $table->tinyInteger('status')->default(0)->comment("0 => unused, 1 => used");
             $table->timestamps();
             $table->softDeletes();
         });

@@ -24,7 +24,9 @@ class User extends Authenticatable
         'verification_code',
         'email_verified_at',
         'profile_photo_path',
-        'password'
+        'password',
+        'status',
+        'is_admin'
     ];
 
     /**

@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\api\Admin\OrdersController;
+use App\Http\Controllers\api\Admin\PairsController as AdminPairsController;
+use App\Http\Controllers\api\Admin\PaymentsController;
 use App\Http\Controllers\api\Admin\PlansController;
 use App\Http\Controllers\api\Admin\UsersController;
 use App\Http\Controllers\api\app\AccountsController;
@@ -54,6 +57,29 @@ Route::prefix('admin')->middleware(['auth:sanctum', idAdmin::class])->group(func
         Route::get('{user}/destroy', [UsersController::class, 'destroy']);
     });
 
+    //payments
+    Route::prefix('payments')->group(function () {
+        Route::get('/', [PaymentsController::class, 'index']);
+        Route::post('/store', [PaymentsController::class, 'store']);
+        Route::put('{payment}/update', [PaymentsController::class, 'update']);
+        Route::get('{payment}/destroy', [PaymentsController::class, 'destroy']);
+    });
+
+    //orders
+    Route::prefix('orders')->group(function () {
+        Route::get('/', [OrdersController::class, 'index']);
+        Route::post('/store', [OrdersController::class, 'store']);
+        Route::put('{order}/update', [OrdersController::class, 'update']);
+        Route::get('{order}/destroy', [OrdersController::class, 'destroy']);
+    });
+
+    //pairs
+    Route::prefix('pairs')->group(function () {
+        Route::get('/', [AdminPairsController::class, 'index']);
+        Route::post('/store', [AdminPairsController::class, 'store']);
+        Route::put('{pair}/update', [AdminPairsController::class, 'update']);
+        Route::get('{pair}/destroy', [AdminPairsController::class, 'destroy']);
+    });
 });
 
 

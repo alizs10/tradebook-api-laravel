@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\api\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Pair;
 use Illuminate\Http\Request;
 
-class UsersController extends Controller
+class PairsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,12 +15,12 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $pairs = Pair::all();
 
         return response([
-            'message' => 'users loaded successfully',
-            'users' => $users
-        ]);
+            'pairs loaded successfully',
+            'pairs' => $pairs
+        ], 200);
     }
 
     /**
@@ -41,7 +41,22 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|min:3|max:20|uniqure:pairs,name',
+            'type' => 'required|in:0,1',
+            'status' => 'required|in:0,1',
+        ]);
+
+        $inputs = $request->all();
+
+        $pair = Pair::create($inputs);
+
+        if ($pair) {
+            return response([
+                'new pair created successfully',
+                'pair' => $pair
+            ], 200);
+        }
     }
 
     /**
@@ -73,24 +88,22 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, Pair $pair)
     {
         $request->validate([
-            'name' => 'required|string|min:5',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'mobile' => 'required|digits:11|unique:users,mobile,' . $user->id,
-            'profile_photo_path' => 'nullable|image|mimes:png,jpg,jpeg',
-            'is_admin' => 'required|numeric|in:0,1'
+            'name' => 'required|string|min:3|max:20|uniqure:pairs,name',
+            'type' => 'required|in:0,1',
+            'status' => 'required|in:0,1',
         ]);
 
         $inputs = $request->all();
 
-        $result = $user->update($inputs);
+        $result = $pair->update($inputs);
 
         if ($result) {
             return response([
-                'message' => 'user updated successfully',
-                'user' => $user
+                'pair updated successfully',
+                'pair' => $pair
             ], 200);
         }
     }
@@ -101,14 +114,16 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy(Pair $pair)
     {
-        $result = $user->delete();
+        $result = $pair->delete();
 
         if ($result) {
             return response([
-                'message' => 'user deleted successfully'
+                'pair deleted successfully',
+                'pair' => $pair
             ], 200);
         }
     }
+
 }
