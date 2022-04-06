@@ -6,20 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Order extends Model
+class Discount extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = [
-        'user_id',
-        'plan_id',
-        'amount',
-        'discount_id',
-        'discount_amount',
-        'total_amount',
-        'order_date',
-        'status'
-    ];
+
+    protected $fillable = ['code', 'value', 'plan_id', 'user_id', 'status'];
 
     protected $appends = ['plan_name', 'user_name'];
 
@@ -31,14 +23,15 @@ class Order extends Model
         return $this->belongsTo(Plan::class, 'plan_id');
     }
 
-    public function discount() {
-        return $this->belongsTo(Discount::class, 'discount_id');
-    }
-
     public function getPlanNameAttribute() {
-        return $this->attributes['plan_name'] = $this->plan->name;
+        return $this->attributes['plan_name'] = !empty($this->plan->name) ? $this->plan->name : "all plans";
     }
     public function getUserNameAttribute() {
-        return $this->attributes['user_name'] = $this->user->name;
+        return $this->attributes['user_name'] = !empty($this->user->name) ? $this->user->name : "public";
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class)->using(DiscountUser::class);
     }
 }

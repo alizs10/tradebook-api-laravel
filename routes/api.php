@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\Admin\DiscountsController;
 use App\Http\Controllers\api\Admin\OrdersController;
 use App\Http\Controllers\api\Admin\PairsController as AdminPairsController;
 use App\Http\Controllers\api\Admin\PaymentsController;
@@ -79,6 +80,14 @@ Route::prefix('admin')->middleware(['auth:sanctum', idAdmin::class])->group(func
         Route::post('/store', [AdminPairsController::class, 'store']);
         Route::put('{pair}/update', [AdminPairsController::class, 'update']);
         Route::get('{pair}/destroy', [AdminPairsController::class, 'destroy']);
+    });
+
+    //discounts
+    Route::prefix('discounts')->group(function () {
+        Route::get('/', [DiscountsController::class, 'index']);
+        Route::post('/store', [DiscountsController::class, 'store']);
+        Route::put('{discount}/update', [DiscountsController::class, 'update']);
+        Route::get('{discount}/destroy', [DiscountsController::class, 'destroy']);
     });
 });
 

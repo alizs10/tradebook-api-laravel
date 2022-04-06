@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\api\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Pair;
+use App\Models\Discount;
 use Illuminate\Http\Request;
 
-class PairsController extends Controller
+class DiscountsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,11 +15,11 @@ class PairsController extends Controller
      */
     public function index()
     {
-        $pairs = Pair::all();
+        $discounts = Discount::all();
 
         return response([
-            'pairs loaded successfully',
-            'pairs' => $pairs
+            'discounts loaded successfully',
+            'discounts' => $discounts
         ], 200);
     }
 
@@ -42,19 +42,21 @@ class PairsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|min:3|max:20|unique:pairs,name',
-            'type' => 'required|in:0,1',
-            'status' => 'required|in:0,1',
+            'user_id' => 'nullable|numeric|exists:users,id',
+            'plan_id ' => 'nullable|numeric|exists:plans,id',
+            'value' => 'required|numeric|min:0|max:100',
+            'code' => 'required|string|max:20|min:2',
+            'status' => 'required|in:0,1'
         ]);
 
         $inputs = $request->all();
 
-        $pair = Pair::create($inputs);
+        $discount = Discount::create($inputs);
 
-        if ($pair) {
+        if ($discount) {
             return response([
-                'new pair created successfully',
-                'pair' => $pair
+                'new discount created successfully',
+                'discount' => $discount
             ], 200);
         }
     }
@@ -88,22 +90,24 @@ class PairsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Pair $pair)
+    public function update(Request $request, Discount $discount)
     {
         $request->validate([
-            'name' => 'required|string|min:3|max:20|unique:pairs,name,' . $pair->id,
-            'type' => 'required|in:0,1',
-            'status' => 'required|in:0,1',
+            'user_id' => 'nullable|numeric|exists:users,id',
+            'plan_id ' => 'nullable|numeric|exists:plans,id',
+            'value' => 'required|numeric|min:0|max:100',
+            'code' => 'required|string|max:20|min:2',
+            'status' => 'required|in:0,1'
         ]);
-
         $inputs = $request->all();
 
-        $result = $pair->update($inputs);
+        $result = $discount->update($inputs);
 
-        if ($result) {
+        if($result)
+        {
             return response([
-                'pair updated successfully',
-                'pair' => $pair
+                'message' => 'discount updated successfully',
+                'discount' => $discount
             ], 200);
         }
     }
@@ -114,16 +118,15 @@ class PairsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Pair $pair)
+    public function destroy(Discount $discount)
     {
-        $result = $pair->delete();
+        $result = $discount->delete();
 
-        if ($result) {
+        if($result)
+        {
             return response([
-                'pair deleted successfully',
-                'pair' => $pair
+                'message' => 'discount deleted successfully'
             ], 200);
         }
     }
-
 }

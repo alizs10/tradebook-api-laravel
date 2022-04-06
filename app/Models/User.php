@@ -73,4 +73,9 @@ class User extends Authenticatable
     {
         return $this->attributes['referral_code'] = $this->referral->referral_code;
     }
+
+    public function discounts()
+    {
+        return $this->belongsToMany(Discount::class)->using(DiscountUser::class);
+    }
 }
