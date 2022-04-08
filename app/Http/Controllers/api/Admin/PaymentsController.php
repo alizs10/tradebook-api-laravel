@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 
@@ -42,23 +43,40 @@ class PaymentsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|numeric|exists:users,id',
             'order_id' => 'nullable|numeric|exists:orders,id',
-            'transaction_id' => 'nullable',
-            'bank_first_response' => 'nullable',
-            'bank_second_response' => 'nullable',
-            'amount' => 'required|numeric',
+            'transaction_id' => 'nullable|string',
             'payment_date' => 'required|date',
             'status' => 'required|in:0,1',
             'type' => 'required|in:0,1',
         ]);
 
         $inputs = $request->all();
+        $order = Order::find($request->order_id);
+        $plan = $order->plan;
+        $user = $order->user;
+        $inputs['user_id'] = $user->id;
+        $inputs['amount'] = $order->total_amount;
+
+        if (intval($inputs['status']) == 1) {
+            $order->update(['status' => 1]);
+
+            // we should charge user's account
+            $user_old_valid_for = $user->plansValues->valid_for;
+            $user_old_valid_until = $user->plansValues->valid_until;
+            $user_new_valid_for = $plan->valid_for + $user_old_valid_for;
+            $user_new_valid_until = $user_old_valid_until->addDays($plan->valid_for);
+
+            $user->plans()->attach($plan->id, ['valid_for' => $plan->valid_for, 'type' => 0]);
+            $user->plansValues()->update(['valid_for' => $user_new_valid_for, 'valid_until' => $user_new_valid_until]);
+
+        } else {
+            $order->update(['status' => 3]);
+        }
+
 
         $payment = Payment::create($inputs);
 
-        if($payment)
-        {
+        if ($payment) {
             return response([
                 'message' => 'payment created successfully',
                 'payment' => $payment
@@ -113,8 +131,7 @@ class PaymentsController extends Controller
 
         $result = $payment->update($inputs);
 
-        if($result)
-        {
+        if ($result) {
             return response([
                 'message' => 'payment updated successfully',
                 'payment' => $payment

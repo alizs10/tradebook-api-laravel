@@ -49,11 +49,10 @@ class OrdersController extends Controller
             'user_id' => 'required|numeric|exists:users,id',
             'plan_id' => 'required|numeric|exists:plans,id',
             'discount_code' => 'nullable|string|max:20',
-            'order_date' => 'required|date',
-            'status' => 'required|in:0,1'
+            'order_date' => 'required|date'
         ]);
         $inputs = $request->all();
-
+        $inputs['status'] = 0;
         $user = User::find($request->user_id);
         $plan = Plan::find($request->plan_id);
 
@@ -66,14 +65,14 @@ class OrdersController extends Controller
             if ($discount) {
                 $is_discount_available_for_plan = true;
 
-                if ($discount->plan_id !== $plan->id) {
+                if ($discount->plan_id !== $plan->id && !empty($discount->plan_id)) {
                     $is_discount_available_for_plan = false;
                 }
 
                 if ($is_discount_available_for_plan) {
                     $is_discount_available_for_user = true;
 
-                    if ($discount->user_id !== $user->id) {
+                    if ($discount->user_id !== $user->id && !empty($discount->user_id)) {
                         $is_discount_available_for_user = false;
                     }
 
@@ -153,10 +152,11 @@ class OrdersController extends Controller
             'discount_amount' => 'required|numeric',
             'total_amount' => 'required|numeric',
             'order_date' => 'required|date',
-            'status' => 'required|in:0,1'
+            'status' => 'required|in:0,1,2,3'
         ]);
 
         $inputs = $request->all();
+        
 
         $result = $order->update($inputs);
 

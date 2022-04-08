@@ -21,24 +21,59 @@ class Order extends Model
         'status'
     ];
 
-    protected $appends = ['plan_name', 'user_name'];
+    protected $appends = ['plan_name', 'user_name', 'status_name', 'discount_code'];
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function plan() {
+    public function plan()
+    {
         return $this->belongsTo(Plan::class, 'plan_id');
     }
 
-    public function discount() {
+    public function discount()
+    {
         return $this->belongsTo(Discount::class, 'discount_id');
     }
 
-    public function getPlanNameAttribute() {
+    public function getPlanNameAttribute()
+    {
         return $this->attributes['plan_name'] = $this->plan->name;
     }
-    public function getUserNameAttribute() {
+    public function getUserNameAttribute()
+    {
         return $this->attributes['user_name'] = $this->user->name;
+    }
+    public function getStatusNameAttribute()
+    {
+        return $this->attributes['status_name'] = $this->statusName();
+    }
+    public function getDiscountCodeAttribute()
+    {
+        return $this->attributes['discount_code'] = $this->discount->code ? $this->discount->code : "بدون کد تخفیف";
+    }
+
+    public function statusName()
+    {
+        switch ($this->status) {
+            case 0:
+                return "پرداخت نشده";
+                break;
+            case 1:
+                return "پرداخت شده";
+                break;
+            case 2:
+                return "لغو شده";
+                break;
+            case 3:
+                return "پرداخت ناموفق";
+                break;
+            
+            default:
+                # code...
+                break;
+        }
     }
 }

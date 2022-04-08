@@ -78,4 +78,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Discount::class)->using(DiscountUser::class);
     }
+
+    public function plans()
+    {
+        return $this->belongsToMany(Plan::class)->using(PlanUser::class);
+    }
 }

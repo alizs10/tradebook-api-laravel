@@ -19,7 +19,7 @@ class idAdmin
     {
         $user = Auth::user();
 
-        if ($user->is_admin === 1) {
+        if ($user->is_admin == 1) {
             return $next($request);
         }
     }

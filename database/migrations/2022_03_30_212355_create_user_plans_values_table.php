@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('valid_for');
             $table->timestamp('valid_until')->nullable();
             $table->timestamps();
-            $table->sof();
+            $table->softDeletes();
         });
     }
 

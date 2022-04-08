@@ -32,6 +32,7 @@ class isActive
             $user->save();
             $user->plansValues()->update(['valid_for' => 0]);
         } else {
+            $user->status == 0 && $user->update(['status' => 1]);
             $user->plansValues->valid_for = $diff;
             $user->plansValues()->update(['valid_for' => $diff]);
         }

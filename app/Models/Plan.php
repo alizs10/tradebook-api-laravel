@@ -12,8 +12,8 @@ class Plan extends Model
 
     protected $fillable = ['name', 'valid_for', 'price'];
 
-    public function user()
+    public function users()
     {
-        return $this->belongsToMany(PlanUser::class);
+        return $this->belongsToMany(User::class)->using(PlanUser::class);
     }
 }
