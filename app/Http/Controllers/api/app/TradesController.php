@@ -59,23 +59,20 @@ class TradesController extends Controller
 
         $request->validate([
             'pair_id' => 'required|numeric|exists:pairs,id',
-            'margin' => 'required|array',
-            'margin.margin' => 'required|numeric',
-            'margin.rate' => 'nullable',
-            'margin.valume' => 'required|numeric',
+            'margin' => 'nullable|numeric',
+            'profit' => 'nullable|numeric',
             'leverage' => 'required|integer|min:0',
             'entry_price' => 'required|numeric|min:0',
             'exit_price' => 'required|numeric|min:0',
             'status' => 'required|numeric|in:0,1',
             'contract_type' => 'required|numeric|in:0,1',
-            'trade_date' => 'required|date',
+            'trade_date' => 'required|date'
         ]);
 
         $inputs = $request->all();
         $inputs['user_id'] = $user->id;
         $inputs['account_id'] = $account->id;
         $calculated_inputs = TradeServices::TradeCalculator($inputs);
-        $calculated_inputs['margin'] = json_encode($calculated_inputs['margin']);
 
         $result = DB::transaction(function () use ($calculated_inputs) {
             $trade = Trade::create($calculated_inputs);

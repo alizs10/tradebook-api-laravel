@@ -15,7 +15,11 @@ class TradeServices
         $trade['pnl'] = ((floatval($trade['exit_price']) - floatval($trade['entry_price'])) / floatval($trade['entry_price'])) * 100 * floatval($trade['leverage']);
         $trade['pnl'] = intval($trade['contract_type']) === 1 ? $trade['pnl'] *= (-1) : $trade['pnl'];
 
-        $trade['profit'] = ($trade['pnl'] * floatval($trade['margin']['margin'])) / 100;
+        if (!$trade['profit']) {
+            $trade['profit'] = ($trade['pnl'] * floatval($trade['margin'])) / 100;
+        } else {
+            $trade['margin'] = ($trade['profit']*100)/$trade['pnl'];
+        }
 
         return $trade;
     }
