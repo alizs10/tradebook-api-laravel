@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\Admin\AdminHomeController;
 use App\Http\Controllers\api\Admin\DiscountsController;
 use App\Http\Controllers\api\Admin\OrdersController;
 use App\Http\Controllers\api\Admin\PairsController as AdminPairsController;
@@ -41,6 +42,10 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 // admin routes
 
 Route::prefix('admin')->middleware(['auth:sanctum', idAdmin::class])->group(function () {
+
+
+    //home
+    Route::get('home', [AdminHomeController::class, 'index']);
 
     //plans
     Route::prefix('plans')->group(function () {
