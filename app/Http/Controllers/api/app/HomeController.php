@@ -16,6 +16,7 @@ class HomeController extends Controller
         $notesCount = count($user->notes);
         $tradesCount = 0;
         $validFor = $user->plansValues->valid_for;
+        $planName = $user->plans->last()->name ? $user->plans->last()->name : "بدون اشتراک";
 
         if ($accountsCount > 0) {
             foreach ($user->accounts as $account) {
@@ -27,7 +28,8 @@ class HomeController extends Controller
             'accountsCount' => $accountsCount,
             'notesCount' => $notesCount,
             'tradesCount' => $tradesCount,
-            'validFor' => $validFor
+            'validFor' => $validFor,
+            'planName' => $planName
         ], 200);
     }
 }
