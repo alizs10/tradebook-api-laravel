@@ -16,7 +16,7 @@ class HomeController extends Controller
         $notesCount = count($user->notes);
         $tradesCount = 0;
         $validFor = $user->plansValues->valid_for;
-        $planName = $user->plans->last()->name ? $user->plans->last()->name : "بدون اشتراک";
+        $planName = !empty($user->plans->toArray()) ? $user->plans->last()->name : "بدون اشتراک";
 
         if ($accountsCount > 0) {
             foreach ($user->accounts as $account) {
