@@ -60,7 +60,7 @@ class OrdersController extends Controller
         $inputs['discount_amount'] = 0;
         $has_discount = false;
 
-        if (!empty($request->discount_code)) {
+        if (!empty($inputs["discount_code"])) {
             $discount = Discount::where(['code' => $request->discount_code, 'status' => 0])->first();
             if ($discount) {
                 $is_discount_available_for_plan = true;

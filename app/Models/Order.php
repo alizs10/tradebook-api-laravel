@@ -52,7 +52,7 @@ class Order extends Model
     }
     public function getDiscountCodeAttribute()
     {
-        return $this->attributes['discount_code'] = $this->discount->code ? $this->discount->code : "بدون کد تخفیف";
+        return $this->attributes['discount_code'] = !empty($this->discount->code) ? $this->discount->code : "بدون کد تخفیف";
     }
 
     public function statusName()
