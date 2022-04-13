@@ -83,4 +83,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Plan::class)->using(PlanUser::class);
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'user_id');
+    }
 }

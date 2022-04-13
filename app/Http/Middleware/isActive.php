@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Notification;
+use App\Services\NotificationsService;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
@@ -16,7 +18,7 @@ class isActive
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next, NotificationsService $notificationsService)
     {
 
         $user = Auth::user();
@@ -31,10 +33,34 @@ class isActive
             $user->plansValues->valid_for = 0;
             $user->save();
             $user->plansValues()->update(['valid_for' => 0]);
+
+
+            $message = "";
+            if (empty($user->plans->toArray())) {
+                $is_user_notified = Notification::where(['user_id' => $user->id, 'status_code' => 1])->last();
+                if (!$is_user_notified || $is_user_notified->notified_at->addDays(5) < $today) {
+                    $message = "شما اشتراکی ندارید، برای استفاده از امکانات اپلیکیشن تریدبوک باید اشتراک تهیه کنید";
+                    $notificationsService->send($message, "home", $user->id, "warning", 1);
+                }
+            } else {
+                $is_user_notified = Notification::where(['user_id' => $user->id, 'status_code' => 2])->last();
+                if (!$is_user_notified || $is_user_notified->notified_at->addDays(5) < $today) {
+                    $message = "اشتراک شما به پایان رسیده است، برای استفاده از امکانات اپلیکیشن تریدبوک باید اشتراک خود را تمدید کنید";
+                    $notificationsService->send($message, "home", $user->id, "error", 2);
+                }
+            }
+
         } else {
             $user->status == 0 && $user->update(['status' => 1]);
             $user->plansValues->valid_for = $diff;
             $user->plansValues()->update(['valid_for' => $diff]);
+            if ($diff < 5) {
+                $is_user_notified = Notification::where(['user_id' => $user->id, 'status_code' => 3])->last();
+                if (!$is_user_notified || $is_user_notified->notified_at->addDays(1) < $today) {
+                    $message = "اشتراک شما به پایان رسیده است، برای استفاده از امکانات اپلیکیشن تریدبوک باید اشتراک خود را تمدید کنید";
+                    $notificationsService->send($message, "home", $user->id, "warning", 3);
+                }
+            }
         }
 
         return $next($request);
