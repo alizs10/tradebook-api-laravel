@@ -75,7 +75,7 @@ class NotificationsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Notification $notification)
+    public function seen(Notification $notification)
     {
         $result = $notification->update(['seen' => 1]);
 

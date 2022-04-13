@@ -10,6 +10,7 @@ use App\Http\Controllers\api\Admin\UsersController;
 use App\Http\Controllers\api\app\AccountsController;
 use App\Http\Controllers\api\app\HomeController;
 use App\Http\Controllers\api\app\NotesController;
+use App\Http\Controllers\api\app\NotificationsController;
 use App\Http\Controllers\api\app\PairsController;
 use App\Http\Controllers\api\app\TradesController;
 use App\Http\Controllers\api\app\UserController;
@@ -104,6 +105,13 @@ Route::prefix('panel')->middleware(['auth:sanctum', isActive::class])->group(fun
     //home
     Route::prefix('home')->group(function () {
         Route::get('/', [HomeController::class, 'index']);
+    });
+
+
+    //notifications
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [NotificationsController::class, 'index']);
+        Route::get('{notification}/seen', [NotificationsController::class, 'seen']);
     });
 
 
