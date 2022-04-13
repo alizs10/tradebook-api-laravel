@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Notification;
 use App\Models\User;
 
 class NotificationsService
@@ -18,7 +19,7 @@ class NotificationsService
             'notified_at' => now()
         ];
 
-        $result = User::create($notification);
+        $result = Notification::create($notification);
 
         return $result ? true : false;
     }
