@@ -61,7 +61,7 @@ class OrdersController extends Controller
         $has_discount = false;
 
         if (!empty($inputs["discount_code"])) {
-            $discount = Discount::where(['code' => $request->discount_code, 'status' => 0])->first();
+            $discount = Discount::where(['code' => $request->discount_code])->where('exp_date', '>', now())->first();
             if ($discount) {
                 $is_discount_available_for_plan = true;
 
@@ -102,7 +102,7 @@ class OrdersController extends Controller
 
         if ($has_discount) {
             $user->discounts()->attach($discount->id);
-            $discount->update(['status' => 1]);
+            $discount->status == 0 &&  $discount->update(['status' => 1]);
         }
 
         if ($order) {

@@ -11,9 +11,11 @@ class Discount extends Model
     use HasFactory, SoftDeletes;
 
 
-    protected $fillable = ['code', 'value', 'plan_id', 'user_id', 'status'];
+    protected $fillable = ['code', 'value', 'plan_id', 'user_id', 'status', 'exp_date'];
 
     protected $appends = ['plan_name', 'user_name'];
+
+    protected $dates = ['exp_date'];
 
     public function user() {
         return $this->belongsTo(User::class, 'user_id');

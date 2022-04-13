@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('value')->comment("percentage");
             $table->string('code');
             $table->tinyInteger('status')->default(0)->comment("0 => unused, 1 => used");
+            $table->timestamp('exp_date')->nullable()->comment('null => always usable');
             $table->timestamps();
             $table->softDeletes();
         });

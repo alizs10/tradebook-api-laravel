@@ -46,7 +46,8 @@ class DiscountsController extends Controller
             'plan_id ' => 'nullable|numeric|exists:plans,id',
             'value' => 'required|numeric|min:0|max:100',
             'code' => 'required|string|max:20|min:2',
-            'status' => 'required|in:0,1'
+            'status' => 'required|in:0,1',
+            'exp_date' => 'nullable|date',
         ]);
 
         $inputs = $request->all();
@@ -97,7 +98,8 @@ class DiscountsController extends Controller
             'plan_id ' => 'nullable|numeric|exists:plans,id',
             'value' => 'required|numeric|min:0|max:100',
             'code' => 'required|string|max:20|min:2',
-            'status' => 'required|in:0,1'
+            'status' => 'required|in:0,1',
+            'exp_date' => 'nullable|date'
         ]);
         $inputs = $request->all();
 

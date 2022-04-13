@@ -59,7 +59,7 @@ class Order extends Model
     {
         switch ($this->status) {
             case 0:
-                return "پرداخت نشده";
+                return "در انتظار پرداخت";
                 break;
             case 1:
                 return "پرداخت شده";
