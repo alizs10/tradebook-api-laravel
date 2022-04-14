@@ -59,6 +59,11 @@ class User extends Authenticatable
         return $this->hasMany(Note::class, 'user_id');
     }
 
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class, 'user_id');
+    }
+
     public function referral()
     {
         return $this->hasOne(ReferralCode::class, 'user_id');

@@ -17,7 +17,7 @@ class CreateStatisticValuesTable extends Migration
             $table->id();
             $table->foreignId('statistic_id')->constrained('statistics')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('account_id')->constrained('accounts')->onUpdate('cascade')->onDelete('cascade');
-            $table->string('value');
+            $table->text('value');
             $table->timestamps();
             $table->softDeletes();
         });

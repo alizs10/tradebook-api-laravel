@@ -21,7 +21,7 @@ class TicketsController extends Controller
         $tickets = $user->tickets;
 
         return response([
-            'tickets loaded successfully',
+            
             'tickets' => $tickets
         ], 200);
     }
@@ -46,7 +46,7 @@ class TicketsController extends Controller
     {
         $request->validate([
             'subject' => 'required|string|min:3|max:90',
-            'body' => 'requried|string|min:3|max:700',
+            'body' => 'required|string|min:3|max:700',
             'parent_id' => 'nullable|numeric|exists:tickets,id',
             'type' => 'required|in:0,1,2,3,4'
         ]);
@@ -57,6 +57,7 @@ class TicketsController extends Controller
         $admin = User::where('is_admin', 1)->first();
         $inputs['admin_id'] = $admin->id;
         $inputs['status'] = 0;
+        $inputs['seen'] = 0;
 
         $ticket = Ticket::create($inputs);
 
