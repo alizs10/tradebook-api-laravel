@@ -12,6 +12,7 @@ use App\Http\Controllers\api\app\HomeController;
 use App\Http\Controllers\api\app\NotesController;
 use App\Http\Controllers\api\app\NotificationsController;
 use App\Http\Controllers\api\app\PairsController;
+use App\Http\Controllers\api\app\TicketsController;
 use App\Http\Controllers\api\app\TradesController;
 use App\Http\Controllers\api\app\UserController;
 use App\Http\Controllers\api\auth\AuthController;
@@ -149,6 +150,13 @@ Route::prefix('panel')->middleware(['auth:sanctum', isActive::class])->group(fun
         Route::post('/store', [NotesController::class, 'store']);
         Route::put('/{note}/update', [NotesController::class, 'update']);
         Route::get('/{note}/destroy', [NotesController::class, 'destroy']);
+    });
+
+    //tickets
+    Route::prefix('tickets')->group(function () {
+        Route::get('/', [TicketsController::class, 'index']);
+        Route::post('/store', [TicketsController::class, 'store']);
+        Route::get('{ticket}/show', [TicketsController::class, 'show']);
     });
 });
 
