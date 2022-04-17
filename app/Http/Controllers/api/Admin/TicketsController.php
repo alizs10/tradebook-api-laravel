@@ -123,7 +123,13 @@ class TicketsController extends Controller
      */
     public function destroy(Ticket $ticket)
     {
-        $result = $ticket->delete();
+    
+        $result = DB::transaction(function () use ($ticket) {
+            $result = $ticket->delete();
+            $ticket->children()->delete();
+
+            return $result;
+        });
         response([
             'message' => 'answer deleted successfully',
             'status' => $result
