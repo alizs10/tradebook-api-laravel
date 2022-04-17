@@ -6,6 +6,7 @@ use App\Http\Controllers\api\Admin\OrdersController;
 use App\Http\Controllers\api\Admin\PairsController as AdminPairsController;
 use App\Http\Controllers\api\Admin\PaymentsController;
 use App\Http\Controllers\api\Admin\PlansController;
+use App\Http\Controllers\api\Admin\TicketsController as AdminTicketsController;
 use App\Http\Controllers\api\Admin\UsersController;
 use App\Http\Controllers\api\app\AccountsController;
 use App\Http\Controllers\api\app\HomeController;
@@ -96,6 +97,16 @@ Route::prefix('admin')->middleware(['auth:sanctum', idAdmin::class])->group(func
         Route::put('{discount}/update', [DiscountsController::class, 'update']);
         Route::get('{discount}/destroy', [DiscountsController::class, 'destroy']);
     });
+
+    //tickets
+    Route::prefix('tickets')->group(function () {
+        Route::get('/', [AdminTicketsController::class, 'index']);
+        Route::post('{ticket}/answer', [AdminTicketsController::class, 'answer']);
+        Route::get('{ticket}/show', [AdminTicketsController::class, 'show']);
+        Route::put('{ticket}/update', [AdminTicketsController::class, 'update']);
+        Route::get('{ticket}/destroy', [AdminTicketsController::class, 'destroy']);
+        Route::get('{ticket}/change-status', [AdminTicketsController::class, 'changeStatus']);
+    });
 });
 
 
@@ -156,6 +167,7 @@ Route::prefix('panel')->middleware(['auth:sanctum', isActive::class])->group(fun
     Route::prefix('tickets')->group(function () {
         Route::get('/', [TicketsController::class, 'index']);
         Route::post('/store', [TicketsController::class, 'store']);
+        Route::post('{ticket}/answer', [TicketsController::class, 'answer']);
         Route::get('{ticket}/show', [TicketsController::class, 'show']);
     });
 });

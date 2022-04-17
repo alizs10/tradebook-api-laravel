@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\api\app;
+namespace App\Http\Controllers\api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ticket;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TicketsController extends Controller
 {
@@ -17,11 +16,10 @@ class TicketsController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        $tickets = Ticket::where(['user_id' => $user->id, 'parent_id' => null])->get();
+        $tickets = Ticket::whereNull('parent_id')->get();
 
         return response([
-            'message' => "tickets loaded successfully",
+            'tickets loaded successfully',
             'tickets' => $tickets
         ], 200);
     }
@@ -42,31 +40,6 @@ class TicketsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'subject' => 'required|string|min:3|max:90',
-            'body' => 'required|string|min:3|max:700',
-            'parent_id' => 'nullable|numeric|exists:tickets,id',
-            'type' => 'required|in:0,1,2,3,4'
-        ]);
-        $user = Auth::user();
-
-        $inputs = $request->all();
-        $inputs['user_id'] = $user->id;
-        $admin = User::where('is_admin', 1)->first();
-        $inputs['admin_id'] = $admin->id;
-        $inputs['status'] = 0;
-        $inputs['seen'] = 0;
-
-        $ticket = Ticket::create($inputs);
-
-        return response([
-            'message' => 'ticket created successfully',
-            'ticket' => $ticket
-        ],200);
-    }
-
     public function answer(Request $request, Ticket $ticket)
     {
         $request->validate([
@@ -75,12 +48,12 @@ class TicketsController extends Controller
         ]);
 
         $inputs = $request->only(['body', 'parent_id']);
-        $inputs['user_id'] = $ticket->user_id;
+        $inputs['user_id'] = $ticket->admin_id;
         $inputs['admin_id'] = $ticket->admin_id;
         $inputs['subject'] = $ticket->subject;
         $inputs['type'] = $ticket->type;
         $inputs['status'] = $ticket->status;
-        $inputs['seen'] = 0;
+        $inputs['seen'] = 1;
 
         $answer = Ticket::create($inputs);
         return response([
@@ -97,6 +70,10 @@ class TicketsController extends Controller
      */
     public function show(Ticket $ticket)
     {
+
+        $ticket->seen == 0 && $ticket->update(['seen' => 1]);
+        $ticket->children()->update(['seen' => 1]);
+
         $children = $ticket->children;
 
         return response([
@@ -124,9 +101,18 @@ class TicketsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Ticket $ticket)
     {
-        //
+        $request->validate([
+            'body' => 'required|string|min:3|max:700'
+        ]);
+
+        $result = $ticket->update(['body' => $request->body]);
+        response([
+            'message' => 'answer updated successfully',
+            'status' => $result,
+            'answer' => $ticket
+        ], 200);
     }
 
     /**
@@ -135,8 +121,25 @@ class TicketsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Ticket $ticket)
     {
-        //
+        $result = $ticket->delete();
+        response([
+            'message' => 'answer deleted successfully',
+            'status' => $result
+        ], 200);
+    }
+
+    public function changeStatus(Ticket $ticket)
+    {
+        $status = $ticket->status == 0 ? 1 : 0;
+        DB::transaction(function () use ($ticket, $status) {
+            $ticket->update(['status' => $status]);
+            $ticket->children()->update(['status' => $status]);
+        });
+        return response([
+            'message' => "ticket's changed successfully",
+            'status' => $status
+        ], 200);
     }
 }

@@ -12,6 +12,9 @@ class Ticket extends Model
 
     protected $fillable = ['user_id', 'admin_id', 'parent_id', 'subject', 'body', 'seen', 'status', 'type'];
 
+    protected $appends = ['user_email'];
+
+
     public function parent()
     {
         return $this->belongsTo($this, 'parent_id');
@@ -19,7 +22,7 @@ class Ticket extends Model
 
     public function children()
     {
-        return $this->hasMany($this, 'parent_id');
+        return $this->hasMany($this, 'parent_id')->with('children');
     }
 
     public function user()
@@ -30,5 +33,10 @@ class Ticket extends Model
     public function admin()
     {
         return $this->belongsTo(User::class, 'admin_id');
+    }
+
+    public function getUserEmailAttribute()
+    {
+        return $this->attributes['user_email'] = $this->user->email;
     }
 }
