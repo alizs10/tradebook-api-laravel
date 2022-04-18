@@ -71,12 +71,14 @@ class StopLossAndTakeProfitCalculator
         return [
             'takeProfitAverage' => $this->takeProfitAverage,
             'stopLossAverage' => $this->stopLossAverage,
-            'stop loss deviation' => $this->stopLossDeviation,
-            'take profit deviation' => $this->takeProfitDeviation,
-            'stop loss Coefficient of variation' => number_format((float)$this->stopLossCoeffiecientOfVariation, 2, '.', ''),
-            'take profit Coefficient of variation' => number_format((float)$this->takeProfitCoeffiecientOfVariation, 2, '.', ''),
-            'stop loss status' => $this->stopLossStatus,
-            'take profit status' => $this->takeProfitStatus,
+            'stopLossDeviation' => $this->stopLossDeviation,
+            'takeProfitDeviation' => $this->takeProfitDeviation,
+            'stopLossCV' => number_format((float)$this->stopLossCoeffiecientOfVariation, 2, '.', ''),
+            'takeProfitCV' => number_format((float)$this->takeProfitCoeffiecientOfVariation, 2, '.', ''),
+            'stopLossStatus' => $this->stopLossStatus,
+            'takeProfitStatus' => $this->takeProfitStatus,
+            'stopLossIdealValue' => $this->idealStopLoss,
+            'takeProfitIdealValue' => $this->idealTakeProfit
         ];
     }
 

@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Statistic;
 use App\Models\StatisticValue;
+use App\Services\StopLossAndTakeProfitCalculator;
 use App\Services\TradeServices;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -103,7 +105,6 @@ class AccountsController extends Controller
         return response([
             'account' => $account
         ], 200);
-
     }
 
     /**
@@ -170,6 +171,61 @@ class AccountsController extends Controller
 
         return response([
             'message' => 'account deleted successfully',
+        ], 200);
+    }
+
+    public function UpdateStopLossAndTakeProfit(Account $account)
+    {
+        $user = Auth::user();
+
+        if (!$this->validateUserOwnsAccount($user, $account)) {
+            return response([
+                'message' => 'there in no such account'
+            ], 422);
+        }
+
+        
+        
+        $result = DB::transaction(function () use ($account) {
+            $calculator = new StopLossAndTakeProfitCalculator($account);
+            $data = $calculator->calculate();
+            
+            $stopLossStatistic = Statistic::where(['name' => 'stop_losses_average'])->first();
+            $takeProfitStatistic = Statistic::where(['name' => 'take_profits_average'])->first();
+            $stopLossStatisticValue = StatisticValue::where(['account_id' => $account->id, 'statistic_id' => $stopLossStatistic->id])->first();
+            $takeProfitStatisticValue = StatisticValue::where(['account_id' => $account->id, 'statistic_id' => $takeProfitStatistic->id])->first();
+
+            $stopLossUpdateArray = [
+                'value' => $data['stopLossAverage'],
+                'ideal_value' => $data['stopLossIdealValue'],
+                'cv' => $data['stopLossCV']*100,
+                'status' => $data['stopLossStatus']['status'],
+                'hint' => $data['stopLossStatus']['hint']
+            ];
+
+            $takeProfitUpdateArray = [
+                'value' => $data['takeProfitAverage'],
+                'ideal_value' => $data['takeProfitIdealValue'],
+                'cv' => $data['takeProfitCV']*100,
+                'status' => $data['takeProfitStatus']['status'],
+                'hint' => $data['takeProfitStatus']['hint']
+            ];
+
+            $stopLossStatisticValue->update([
+                'value' => json_encode($stopLossUpdateArray)
+            ]);
+            $takeProfitStatisticValue->update([
+                'value' => json_encode($takeProfitUpdateArray)
+            ]);
+
+            return [$stopLossUpdateArray, $takeProfitUpdateArray];
+        });
+
+        return response([
+            'message' => 'stop loss and take profit updated successfully',
+            'stopLoss' => $result[0],
+            'takeProfit' => $result[1],
+            'updated_at' => Carbon::now('Asia/Tehran')
         ], 200);
     }
 

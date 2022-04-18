@@ -146,6 +146,7 @@ Route::prefix('panel')->middleware(['auth:sanctum', isActive::class])->group(fun
         Route::get('{account}/show', [AccountsController::class, 'show']);
         Route::put('{account}/update', [AccountsController::class, 'update']);
         Route::get('{account}/destroy', [AccountsController::class, 'destroy']);
+        Route::get('{account}/update-stop-loss-and-take-profit', [AccountsController::class, 'UpdateStopLossAndTakeProfit']);
 
 
         //trades
@@ -193,12 +194,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ], 200);
 });
 
-Route::get('/{account}/calculate-sl-tp', function (Request $request, Account $account) {
+// Route::get('/{account}/calculate-sl-tp', function (Request $request, Account $account) {
 
-    $calculator = new StopLossAndTakeProfitCalculator($account);
-    $data = $calculator->calculate();
+//     $calculator = new StopLossAndTakeProfitCalculator($account);
+//     $data = $calculator->calculate();
 
-    return response([
-        'data' => $data
-    ], 200);
-});
+//     return response([
+//         'data' => $data
+//     ], 200);
+// });
