@@ -19,6 +19,8 @@ use App\Http\Controllers\api\app\UserController;
 use App\Http\Controllers\api\auth\AuthController;
 use App\Http\Middleware\idAdmin;
 use App\Http\Middleware\isActive;
+use App\Models\Account;
+use App\Services\StopLossAndTakeProfitCalculator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -188,5 +190,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return response([
         'status' => true,
         'user' => $request->user()
+    ], 200);
+});
+
+Route::get('/{account}/calculate-sl-tp', function (Request $request, Account $account) {
+
+    $calculator = new StopLossAndTakeProfitCalculator($account);
+    $data = $calculator->calculate();
+
+    return response([
+        'data' => $data
     ], 200);
 });

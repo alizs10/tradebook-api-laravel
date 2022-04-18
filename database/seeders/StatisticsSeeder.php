@@ -32,7 +32,9 @@ class StatisticsSeeder extends Seeder
         ["name" => "profit", "created_at" => now()],
         ["name" => "profit_percentage", "created_at" => now()],
         ["name" => "positive_profit", "created_at" => now()],
-        ["name" => "negetive_profit", "created_at" => now()]
+        ["name" => "negetive_profit", "created_at" => now()],
+        ["name" => "stop_losses_average", "created_at" => now()],
+        ["name" => "take_profits_average", "created_at" => now()]
        ]);
     }
 }

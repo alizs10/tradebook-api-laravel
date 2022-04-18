@@ -65,7 +65,7 @@ class TradeServices
                 $trade['pnl'] < 0 && $minusPnls += $trade['pnl'];
                 $trade['profit'] > 0 ? $positiveProfit += $trade['profit'] : $negetiveProfit += $trade['profit'];
                 $updated_balance += $trade['profit'];
-                array_push($balance_data, array('date' => date('Y-m-d', strtotime($trade['trade_date'])), 'balance' => $updated_balance));
+                array_push($balance_data, array('date' => date('Y-m-d H:i:s', strtotime($trade['trade_date'])), 'balance' => $updated_balance));
             }
         }
 
