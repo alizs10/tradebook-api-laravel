@@ -12,7 +12,9 @@ use App\Http\Controllers\api\app\AccountsController;
 use App\Http\Controllers\api\app\HomeController;
 use App\Http\Controllers\api\app\NotesController;
 use App\Http\Controllers\api\app\NotificationsController;
+use App\Http\Controllers\api\app\OrdersController as AppOrdersController;
 use App\Http\Controllers\api\app\PairsController;
+use App\Http\Controllers\api\app\PlansController as AppPlansController;
 use App\Http\Controllers\api\app\TicketsController;
 use App\Http\Controllers\api\app\TradesController;
 use App\Http\Controllers\api\app\UserController;
@@ -121,6 +123,11 @@ Route::prefix('panel')->middleware(['auth:sanctum', isActive::class])->group(fun
         Route::get('/', [HomeController::class, 'index']);
     });
 
+    //home
+    Route::prefix('plans')->group(function () {
+        Route::get('/', [AppPlansController::class, 'index']);
+    });
+
 
     //notifications
     Route::prefix('notifications')->group(function () {
@@ -172,6 +179,15 @@ Route::prefix('panel')->middleware(['auth:sanctum', isActive::class])->group(fun
         Route::post('/store', [TicketsController::class, 'store']);
         Route::post('{ticket}/answer', [TicketsController::class, 'answer']);
         Route::get('{ticket}/show', [TicketsController::class, 'show']);
+    });
+
+    //orders
+    Route::prefix('orders')->group(function () {
+        Route::get('/', [AppOrdersController::class, 'index']);
+        Route::post('{plan}/store', [AppOrdersController::class, 'store']);
+        Route::get('{order}/show', [AppOrdersController::class, 'show']);
+        Route::put('{order}/check-and-apply-discount-code', [AppOrdersController::class, 'checkAndApplyDiscountCode']);
+        Route::get('{order}/cancel', [AppOrdersController::class, 'cancel']);
     });
 });
 
