@@ -14,6 +14,7 @@ use App\Http\Controllers\api\app\NotesController;
 use App\Http\Controllers\api\app\NotificationsController;
 use App\Http\Controllers\api\app\OrdersController as AppOrdersController;
 use App\Http\Controllers\api\app\PairsController;
+use App\Http\Controllers\api\app\PaymentsController as AppPaymentsController;
 use App\Http\Controllers\api\app\PlansController as AppPlansController;
 use App\Http\Controllers\api\app\TicketsController;
 use App\Http\Controllers\api\app\TradesController;
@@ -188,6 +189,16 @@ Route::prefix('panel')->middleware(['auth:sanctum', isActive::class])->group(fun
         Route::get('{order}/show', [AppOrdersController::class, 'show']);
         Route::put('{order}/check-and-apply-discount-code', [AppOrdersController::class, 'checkAndApplyDiscountCode']);
         Route::get('{order}/cancel', [AppOrdersController::class, 'cancel']);
+    });
+
+    //orders
+    Route::prefix('payments')->group(function () {
+        Route::get('/', [AppPaymentsController::class, 'index']);
+        Route::get('{order}/store', [AppPaymentsController::class, 'store']);
+        Route::get('verify-payment', [AppPaymentsController::class, 'update']);
+        Route::get('{order}/show', [AppPaymentsController::class, 'show']);
+        Route::put('{order}/check-and-apply-discount-code', [AppPaymentsController::class, 'checkAndApplyDiscountCode']);
+        Route::get('{order}/cancel', [AppPaymentsController::class, 'cancel']);
     });
 });
 

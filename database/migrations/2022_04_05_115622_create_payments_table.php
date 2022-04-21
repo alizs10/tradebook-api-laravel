@@ -15,11 +15,10 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->text('transaction_id');
+            $table->string('transaction_id')->nullable();
+            $table->string('reference_id')->nullable();
             $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('order_id')->constrained('orders')->onUpdate('cascade')->onDelete('cascade');
-            $table->text('bank_first_response')->nullable();
-            $table->text('bank_second_response')->nullable();
             $table->decimal('amount', 20, 3);
             $table->timestamp('payment_date')->nullable();
             $table->tinyInteger('status')->nullable();
