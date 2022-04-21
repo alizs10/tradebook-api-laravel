@@ -11,14 +11,19 @@ class TradeServices
 
     static public function TradeCalculator(array $trade)
     {
+        $is_forex = false;
+
+        $acc = Account::find($trade["account_id"]);
+        $acc->type == 1 && $is_forex = true;
+        
         
         $trade['pnl'] = ((floatval($trade['exit_price']) - floatval($trade['entry_price'])) / floatval($trade['entry_price'])) * 100 * floatval($trade['leverage']);
         $trade['pnl'] = intval($trade['contract_type']) === 1 ? $trade['pnl'] *= (-1) : $trade['pnl'];
 
-        if (!$trade['profit']) {
+        if (!$is_forex) {
             $trade['profit'] = ($trade['pnl'] * floatval($trade['margin'])) / 100;
         } else {
-            $trade['margin'] = ($trade['profit']*100)/$trade['pnl'];
+            $trade['margin'] = abs(($trade['profit']*100)/$trade['pnl']);
         }
 
         return $trade;

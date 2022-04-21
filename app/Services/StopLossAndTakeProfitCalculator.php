@@ -156,7 +156,7 @@ class StopLossAndTakeProfitCalculator
         if (!is_numeric($this->takeProfitAverage)) {
             $this->takeProfitStatus = "داده ناکافی";
         } else {
-            $takeProfitDeviaionFromIdeal = $this->idealTakeProfit - $this->takeProfitAverage;
+            $takeProfitDeviaionFromIdeal = $this->takeProfitAverage - $this->idealTakeProfit;
             if ($takeProfitDeviaionFromIdeal >= 2) {
                 $this->takeProfitStatus = [
                     'status' => $this->statusArray[0],

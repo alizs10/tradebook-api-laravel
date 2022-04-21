@@ -89,6 +89,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Plan::class)->using(PlanUser::class);
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'user_id');
+    }
+
     public function notifications()
     {
         return $this->hasMany(Notification::class, 'user_id');
