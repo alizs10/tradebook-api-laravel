@@ -16,7 +16,7 @@ class PaymentsController extends Controller
      */
     public function index()
     {
-        $payments = Payment::all();
+        $payments = Payment::orderBy("payment_date", "desc")->get();
 
         return response([
             'message' => 'payments loaded successfully',

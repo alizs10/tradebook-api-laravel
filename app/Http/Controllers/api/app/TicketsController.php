@@ -18,7 +18,7 @@ class TicketsController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $tickets = Ticket::where(['user_id' => $user->id, 'parent_id' => null])->get();
+        $tickets = Ticket::where(['user_id' => $user->id, 'parent_id' => null])->orderBy("created_at", 'desc')->get();
 
         return response([
             'message' => "tickets loaded successfully",
@@ -64,7 +64,7 @@ class TicketsController extends Controller
         return response([
             'message' => 'ticket created successfully',
             'ticket' => $ticket
-        ],200);
+        ], 200);
     }
 
     public function answer(Request $request, Ticket $ticket)

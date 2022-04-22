@@ -91,7 +91,7 @@ class User extends Authenticatable
 
     public function orders()
     {
-        return $this->hasMany(Order::class, 'user_id');
+        return $this->hasMany(Order::class, 'user_id')->orderBy('order_date', 'desc');
     }
 
     public function notifications()
