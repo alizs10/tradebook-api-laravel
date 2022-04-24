@@ -100,7 +100,7 @@ class UserController extends Controller
         if ($request->hasFile('profile_photo_path')) {
 
             $imageService->setExclusiveDirectory('images' . DIRECTORY_SEPARATOR . 'avatars');
-            $imagePath = $imageService->save($request->file('profile_photo_path'));
+            $imagePath = $imageService->fitAndSave($request->file('profile_photo_path'), 600, 600);
             $inputs['profile_photo_path'] = $imagePath;
         }
 

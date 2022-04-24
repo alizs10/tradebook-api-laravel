@@ -121,7 +121,7 @@ class StopLossAndTakeProfitCalculator
         if (!is_numeric($this->stopLossAverage)) {
             $this->stopLossStatus = "داده ناکافی";
         } else {
-            $stopLossDeviaionFromIdeal = $this->idealStopLoss - abs($this->stopLossAverage);
+            $stopLossDeviaionFromIdeal = abs($this->stopLossAverage) - $this->idealStopLoss;
             if ($stopLossDeviaionFromIdeal >= 2) {
                 $this->stopLossStatus = [
                     'status' => $this->statusArray[4],
