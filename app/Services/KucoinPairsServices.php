@@ -5,17 +5,17 @@ namespace App\Services;
 use App\Sevices\PairsServices;
 use Illuminate\Support\Facades\Http;
 
-class BinancePairsServices
+class KucoinPairsServices
 {
     public function getAllSymbols(PairsServices $pairsServices)
     {
-        $response = Http::get('https://api.binance.com/api/v3/exchangeInfo')['symbols'];
+        $response = Http::get('https://api.kucoin.com/api/v1/symbols')['data'];
 
         $symbols = [];
 
         foreach ($response as $symbol) {
             array_push($symbols, array(
-                'name' => $symbol['symbol'],
+                'name' => str_replace("-", "", $symbol['symbol']),
                 'type' => 0,
                 'status' => 1
             ));
@@ -31,4 +31,6 @@ class BinancePairsServices
     }
 
    
+
+
 }
