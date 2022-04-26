@@ -9,6 +9,8 @@ use App\Models\Plan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use function PHPUnit\Framework\isNull;
+
 class OrdersController extends Controller
 {
     /**
@@ -171,8 +173,8 @@ class OrdersController extends Controller
         }
 
         if (!empty($inputs["discount_code"])) {
-            $discount = Discount::where(['code' => $request->discount_code])->where('exp_date', '>', now())->first();
-            if ($discount) {
+            $discount = Discount::where(['code' => $request->discount_code])->first();
+            if ($discount && (isNull($discount->exp_date) || $discount->exp_date > now())) {
                 $is_discount_available_for_plan = true;
 
                 if ($discount->plan_id !== $plan->id && !empty($discount->plan_id)) {
