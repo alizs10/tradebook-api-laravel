@@ -25,11 +25,11 @@ class HomeController extends Controller
         }
 
         return response([
-            'accountsCount' => $accountsCount,
-            'notesCount' => $notesCount,
-            'tradesCount' => $tradesCount,
-            'validFor' => $validFor,
-            'planName' => $planName
+            ["name" => "حساب ها", "value" => $accountsCount],
+            ["name" => "یادداشت ها", "value" => $notesCount],
+            ["name" => "ترید ها", "value" => $tradesCount],
+            ["name" => "روزهای باقی مانده", "value" => $validFor],
+            ["name" => "اشتراک", "value" => $planName]
         ], 200);
     }
 }
