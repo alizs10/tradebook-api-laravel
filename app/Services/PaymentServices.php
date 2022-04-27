@@ -30,6 +30,8 @@ class PaymentServices
     public function verifyPayment($transaction_id)
     {
         $payment = ModelsPayment::where(["transaction_id" => $transaction_id])->first();
+        $user_id = $payment->user_id;
+        $plan_id = $payment->order->plan_id;
         
         try {
             $receipt = Payment::amount($payment->amount)->transactionId($transaction_id)->verify();
@@ -41,7 +43,9 @@ class PaymentServices
             ]);
 
             if ($result) {
-                return [true, $result];
+                $planServices = new PlansServices;
+                $is_given = $planServices->giveUser($user_id, $plan_id);
+                return [true, $result, $is_given];
             }
 
             return [false, $result];

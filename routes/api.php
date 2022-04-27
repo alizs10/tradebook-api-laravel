@@ -8,6 +8,7 @@ use App\Http\Controllers\api\Admin\PaymentsController;
 use App\Http\Controllers\api\Admin\PlansController;
 use App\Http\Controllers\api\Admin\TicketsController as AdminTicketsController;
 use App\Http\Controllers\api\Admin\UsersController;
+use App\Http\Controllers\api\Admin\UsersPlansValuesController;
 use App\Http\Controllers\api\app\AccountsController;
 use App\Http\Controllers\api\app\HomeController;
 use App\Http\Controllers\api\app\NotesController;
@@ -69,6 +70,11 @@ Route::prefix('admin')->middleware(['auth:sanctum', idAdmin::class])->group(func
         Route::get('/', [UsersController::class, 'index']);
         Route::put('{user}/update', [UsersController::class, 'update']);
         Route::get('{user}/destroy', [UsersController::class, 'destroy']);
+    });
+
+    //users plans values
+    Route::prefix('users-plans-values')->group(function () {
+        Route::get('/', [UsersPlansValuesController::class, 'index']);
     });
 
     //payments

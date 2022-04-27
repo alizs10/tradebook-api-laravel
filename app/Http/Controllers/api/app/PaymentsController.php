@@ -85,7 +85,8 @@ class PaymentsController extends Controller
 
         if ($result[0]) {
             return response([
-                'status' => $result[1]
+                'status' => $result[1],
+                'give plan to user status' => $result[2]
             ], 200);
         } else {
             return response([

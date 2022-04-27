@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Services\PlansServices;
 use Illuminate\Http\Request;
 
 class PaymentsController extends Controller
@@ -57,17 +58,12 @@ class PaymentsController extends Controller
         $inputs['user_id'] = $user->id;
         $inputs['amount'] = $order->total_amount;
 
-        if (intval($inputs['status']) == 1) {
+        if ($inputs['status'] == 1) {
             $order->update(['status' => 1]);
 
             // we should charge user's account
-            $user_old_valid_for = $user->plansValues->valid_for;
-            $user_old_valid_until = $user->plansValues->valid_until;
-            $user_new_valid_for = $plan->valid_for + $user_old_valid_for;
-            $user_new_valid_until = $user_old_valid_until->addDays($plan->valid_for);
-
-            $user->plans()->attach($plan->id, ['valid_for' => $plan->valid_for, 'type' => 0]);
-            $user->plansValues()->update(['valid_for' => $user_new_valid_for, 'valid_until' => $user_new_valid_until]);
+            $planServices = new PlansServices;
+            $planServices->giveUser($user->id, $plan->id);
 
         } else {
             $order->update(['status' => 3]);
