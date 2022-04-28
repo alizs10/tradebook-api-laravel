@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\api\Admin\AdminHomeController;
 use App\Http\Controllers\api\Admin\DiscountsController;
+use App\Http\Controllers\api\Admin\NotificationsController as AdminNotificationsController;
 use App\Http\Controllers\api\Admin\OrdersController;
 use App\Http\Controllers\api\Admin\PairsController as AdminPairsController;
 use App\Http\Controllers\api\Admin\PaymentsController;
@@ -75,6 +76,11 @@ Route::prefix('admin')->middleware(['auth:sanctum', idAdmin::class])->group(func
     //users plans values
     Route::prefix('users-plans-values')->group(function () {
         Route::get('/', [UsersPlansValuesController::class, 'index']);
+    });
+
+    //notifications
+    Route::prefix('notifications')->group(function () {
+        Route::post('/send', [AdminNotificationsController::class, 'send']);
     });
 
     //payments

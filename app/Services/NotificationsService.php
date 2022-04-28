@@ -8,6 +8,7 @@ class NotificationsService
 {
     public function send($message, $section, $user_id, $type = "warning", $status_code = 0)
     {
+        
         $notification = [
             'message' => $message,
             'section' => $section,

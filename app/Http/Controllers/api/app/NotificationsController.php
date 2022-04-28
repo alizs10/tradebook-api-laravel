@@ -17,7 +17,7 @@ class NotificationsController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $notifications = $user->notifications;
+        $notifications = Notification::where(["user_id" => $user->id])->orWhere(["user_id" => null])->get();
 
         return response([
             'message' => 'notifications loaded successfully',
