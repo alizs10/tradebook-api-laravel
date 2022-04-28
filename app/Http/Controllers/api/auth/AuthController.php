@@ -46,7 +46,7 @@ class AuthController extends Controller
         ], 401);
     }
 
-    public function register(Request $request, ReferralCodeServices $referralCodeServices)
+    public function register(Request $request)
     {
         $request->validate([
             'name' => 'required|string|min:5|max:90',
@@ -57,7 +57,7 @@ class AuthController extends Controller
         ]);
 
 
-        $result = DB::transaction(function () use ($request, $referralCodeServices) {
+        $result = DB::transaction(function () use ($request) {
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -83,9 +83,14 @@ class AuthController extends Controller
             ]);
 
             if ($request->filled("referral_code")) {
-                $response = $referralCodeServices->apply($request->referral_code, $referralCode);
+                $referralCodeServices = new ReferralCodeServices($request->referral_code, $referralCode);
+                $response = $referralCodeServices->apply();
                 if ($response["status"]) {
+                    $old_user = ReferralCode::where([
+                        'referral_code' => $request->referral_code
+                    ])->first();
                     $notificationService->send($response["message"], "home", $user->id, "success");
+                    $notificationService->send($response["message"], "home", $old_user->id, "success");
                 } else {
                     $notificationService->send($response["message"], "home", $user->id, "error");
                 }
