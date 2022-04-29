@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('section');
             $table->string('type')->default("warning")->comment("success, warning, error, primary, info");
             $table->tinyInteger('seen')->default(0)->comment("0 => unseen, 1 => seen");
-            $table->tinyInteger('status_code')->comment("0 => normal, 1 => no plan ,2 => plan is over, 3 => plan is about to be over");
+            $table->tinyInteger('status_code')->comment("0 => normal, 1 => no plan ,2 => plan is over, 3 => plan is about to be over, 4 => send by Admin");
             $table->timestamps();
             $table->softDeletes();
         });

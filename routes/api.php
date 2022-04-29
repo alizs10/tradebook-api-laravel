@@ -80,7 +80,10 @@ Route::prefix('admin')->middleware(['auth:sanctum', idAdmin::class])->group(func
 
     //notifications
     Route::prefix('notifications')->group(function () {
+        Route::get('/', [AdminNotificationsController::class, 'index']);
         Route::post('/send', [AdminNotificationsController::class, 'send']);
+        Route::put('/{notification}/update', [AdminNotificationsController::class, 'update']);
+        Route::get('/{notification}/destroy', [AdminNotificationsController::class, 'destroy']);
     });
 
     //payments
