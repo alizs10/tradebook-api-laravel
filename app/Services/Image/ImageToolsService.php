@@ -101,7 +101,8 @@ class ImageToolsService
     {
 
         if (!file_exists($imageDirectory)) {
-            mkdir($imageDirectory, 666, true);
+            print_r($imageDirectory);
+            mkdir($imageDirectory, 0755, true);
         }
 
 

@@ -79,7 +79,7 @@ class UsersController extends Controller
             'name' => 'required|string|min:5',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'mobile' => 'required|digits:11|unique:users,mobile,' . $user->id,
-            'profile_photo_path' => 'nullable|image|mimes:png,jpg,jpeg',
+            'profile_photo_path' => 'nullable|image|mimes:png,jpg,jpeg,webp',
             'is_admin' => 'required|numeric|in:0,1'
         ]);
 

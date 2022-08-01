@@ -189,7 +189,7 @@ class AccountsController extends Controller
         $result = DB::transaction(function () use ($account) {
             $calculator = new StopLossAndTakeProfitCalculator($account);
             $data = $calculator->calculate();
-            
+          
             $stopLossStatistic = Statistic::where(['name' => 'stop_losses_average'])->first();
             $takeProfitStatistic = Statistic::where(['name' => 'take_profits_average'])->first();
             $stopLossStatisticValue = StatisticValue::where(['account_id' => $account->id, 'statistic_id' => $stopLossStatistic->id])->first();

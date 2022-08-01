@@ -43,7 +43,6 @@ class StopLossAndTakeProfitCalculator
         $statistic_value = StatisticValue::where(['statistic_id' => $statistic->id, 'account_id' => $this->account->id])->first();
         $balanceData = json_decode($statistic_value['value'], true);
 
-
         foreach ($trades as $trade) {
             $matchData = $balanceData[0];
             foreach ($balanceData as $data) {
@@ -62,6 +61,8 @@ class StopLossAndTakeProfitCalculator
                 array_push($this->stopLossArray, $stopLossPercentage);
             }
         }
+
+    
 
         $this->stopLossAverage = count($this->stopLossArray) !== 0 ? array_sum($this->stopLossArray) / count($this->stopLossArray) : "قابل محاسبه نیست";
         $this->takeProfitAverage = count($this->takeProfitArray) !== 0 ? array_sum($this->takeProfitArray) / count($this->takeProfitArray) : "قابل محاسبه نیست";
