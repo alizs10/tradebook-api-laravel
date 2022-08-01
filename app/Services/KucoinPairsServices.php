@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
-use App\Sevices\PairsServices;
+use App\Services\PairsServices;
 use Illuminate\Support\Facades\Http;
 
 class KucoinPairsServices
 {
-    public function getAllSymbols(PairsServices $pairsServices)
+    public function getAllSymbols()
     {
+        $pairsServices = new PairsServices;
         $response = Http::get('https://api.kucoin.com/api/v1/symbols')['data'];
 
         $symbols = [];

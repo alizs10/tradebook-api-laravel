@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Sevices;
+namespace App\Services;
 
 use App\Models\Pair;
 

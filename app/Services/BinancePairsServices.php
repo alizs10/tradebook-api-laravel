@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
-use App\Sevices\PairsServices;
+use App\Services\PairsServices;
 use Illuminate\Support\Facades\Http;
 
 class BinancePairsServices
 {
-    public function getAllSymbols(PairsServices $pairsServices)
+    public function getAllSymbols()
     {
+        $pairsServices = new PairsServices;
         $response = Http::get('https://api.binance.com/api/v3/exchangeInfo')['symbols'];
 
         $symbols = [];
